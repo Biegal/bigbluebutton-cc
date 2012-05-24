@@ -18,8 +18,8 @@ def parse(response):
         return None
 
 class Meeting(object):
-    def __init__(self, name='', meeting_id='', attendee_password=None, moderator_password=None):
-        self.name = name
+    def __init__(self, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
+        self.meeting_name = meeting_name
         self.meeting_id = meeting_id
         self.attendee_password = attendee_password
         self.moderator_password = moderator_password
@@ -118,7 +118,7 @@ class Meeting(object):
         call = 'create' 
         voicebridge = 70000 + random.randint(0,9999)
         query = urlencode((
-            ('name', self.name),
+            ('name', self.meeting_name),
             ('meetingID', self.meeting_id),
             ('attendeePW', self.attendee_password),
             ('moderatorPW', self.moderator_password),
