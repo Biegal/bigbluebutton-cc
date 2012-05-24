@@ -1,4 +1,5 @@
 
+import argparse
 from urllib2 import urlopen
 from urllib import urlencode
 from hashlib import sha1
@@ -145,3 +146,42 @@ class Meeting(object):
         url = settings.BBB_API_URL + call + '?' + hashed
         return url
 
+if __name__ == '__main__':
+    PARSER = argparse.ArgumentParser(description='creates and join a session')
+    PARSER.add_argument('--meeting_name', dest="meeting_name", type=str, required=True,
+                       help='name of the meeting')
+    PARSER.add_argument('--meeting_id', dest='meeting_id', required=True,
+                       help='id for the meeting')
+    PARSER.add_argument('--moderator', dest='moderator', required=True,
+                       help='name of the meeting moderator')
+    PARSER.add_argument( '--moderator_password', dest='moderator_password', required=True,
+                       help='password for moderator')
+    PARSER.add_argument( '--attendee_password', dest='attendee_password', required=True,
+                       help='password for attendee')
+
+    ARGS = PARSER.parse_args()
+
+    SESSION = Meeting(ARGS.meeting_name, ARGS.meeting_id, ARGS.attendee_password, ARGS.moderator_password)
+    SESSION.start_meeting()
+    print "MODERATOR:"
+    print SESSION.join_url(ARGS.meeting_id, ARGS.moderator, ARGS.moderator_password)
+    print '-------------------------------------------'
+
+    print "RANDOM USER:"
+    print SESSION.join_url(ARGS.meeting_id, 'RANDOM', ARGS.attendee_password)
+    print '-------------------------------------------'    
+
+    print "ALL MEETINGS"
+    print SESSION.get_meetings()
+    print '-------------------------------------------'
+
+    print "IS RUNNING (meeting is only running after someone has joined in)"
+    print SESSION.is_running()
+    print '-------------------------------------------'
+
+    print "END MEETING"
+    SESSION.end_meeting(ARGS.meeting_id, ARGS.moderator_password)
+    print '-------------------------------------------'
+    
+    
+    
