@@ -23,24 +23,25 @@ class Meeting(object):
         ))
         result = get_xml(self.bbb_api_url, self.salt, call, query)
         if result:
-            return result.find('running').text
+            return result.find('running').text == 'true'
         else:
             return 'error'
 
     def create_meeting(self):
-        call = 'create'
-        voicebridge = 70000 + random.randint(0, 9999)
-        query = urlencode((
-            ('name', self.meeting_name),
-            ('meetingID', self.meeting_id),
-            ('attendeePW', self.attendee_password),
-            ('moderatorPW', self.moderator_password),
-            ('voiceBridge', voicebridge),
-            ('welcome', "Welcome!"),
-        ))
-        result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if result:
-            return result
-        else:
-            raise
+        if not self.is_running():
+            call = 'create'
+            voicebridge = 70000 + random.randint(0, 9999)
+            query = urlencode((
+                ('name', self.meeting_name),
+                ('meetingID', self.meeting_id),
+                ('attendeePW', self.attendee_password),
+                ('moderatorPW', self.moderator_password),
+                ('voiceBridge', voicebridge),
+                ('welcome', "Welcome!"),
+            ))
+            result = get_xml(self.bbb_api_url, self.salt, call, query)
+            if result:
+                return result
+            else:
+                raise
 
