@@ -1,13 +1,10 @@
-from django.db import models
-from django import forms
-from django.conf import settings
-from django.core.urlresolvers import reverse
 
 from urllib2 import urlopen
 from urllib import urlencode
 from hashlib import sha1
 import xml.etree.ElementTree as ET
 import random
+import settings
 
 def parse(response):
     try:
@@ -20,12 +17,13 @@ def parse(response):
     except:
         return None
 
-class Meeting(models.Model):
+class Meeting(object):
+    def __init__(self, name='', meeting_id='', attendee_password=None, moderator_password=None):
+        self.name = name
+        self.meeting_id = meeting_id
+        self.attendee_password = attendee_password
+        self.moderator_password = moderator_password
 
-    name = models.CharField(max_length=100, unique=True)
-    meeting_id = models.CharField(max_length=100, unique=True)
-    attendee_password = models.CharField(max_length=50)
-    moderator_password = models.CharField(max_length=50)
 
     @classmethod
     def api_call(self, query, call):
@@ -81,7 +79,7 @@ class Meeting(models.Model):
                 'moderator_count': r.find('moderatorCount').text,
                 'moderator_pw': r.find('moderatorPW').text,
                 'attendee_pw': r.find('attendeePW').text,
-                'invite_url': reverse('join', args=[meeting_id]),
+                'invite_url': 'join=%s' % meeting_id,
             }
             return d
         else:
@@ -147,24 +145,3 @@ class Meeting(models.Model):
         url = settings.BBB_API_URL + call + '?' + hashed
         return url
 
-    class CreateForm(forms.Form):
-        name = forms.SlugField()
-        attendee_password = forms.CharField(
-            widget=forms.PasswordInput(render_value=False))
-        moderator_password= forms.CharField(
-            widget=forms.PasswordInput(render_value=False))
-
-        def clean(self):
-            data = self.cleaned_data
-
-            # TODO: should check for errors before modifying
-            data['meeting_id'] = data.get('name')
-
-            if Meeting.objects.filter(name = data.get('name')):
-                raise forms.ValidationError("That meeting name is already in use")
-            return data
-
-    class JoinForm(forms.Form):
-        name = forms.CharField(label="Your name")
-        password = forms.CharField(
-            widget=forms.PasswordInput(render_value=False))
