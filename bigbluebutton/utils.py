@@ -19,7 +19,12 @@ def api_call(salt, query, call):
     checksum = sha1(prepared).hexdigest()
     result = "%s&checksum=%s" % (query, checksum)
     return result
-
+    
+def get_parse_result(bbb_api_url, salt, call, query):
+    hashed = api_call(salt, query, call)
+    url = bbb_api_url + call + '?' + hashed
+    result = parse(urlopen(url).read())
+    return result
 
 class Utils(object):
     def __init__(self, bbb_api_url=None, salt=None):
@@ -43,13 +48,14 @@ class Utils(object):
                            ('meetingID', meeting_id),
                            ('password', password),
         ))
-        hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        result = parse(urlopen(url).read())
+        result = get_parse_result(self.bbb_api_url, self.salt, call, query)
         if result:
             pass
         else:
             return 'error'
+
+
+
 
     def meeting_info(self, meeting_id, password):
         call = 'getMeetingInfo'
@@ -57,9 +63,7 @@ class Utils(object):
                            ('meetingID', meeting_id),
                            ('password', password),
                            ))
-        hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        r = parse(urlopen(url).read())
+        r = get_parse_result(self.bbb_api_url, self.salt, call, query)
         if r:
             # Create dict of values for easy use in template
             d = {
@@ -80,9 +84,8 @@ class Utils(object):
         query = urlencode((
                            ('random', 'random'),
                            ))
-        hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        result = parse(urlopen(url).read())
+
+        result = get_parse_result(self.bbb_api_url, self.salt, call, query)
         if result:
             # Create dict of values for easy use in template
             d = []

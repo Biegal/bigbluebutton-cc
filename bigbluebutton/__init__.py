@@ -4,7 +4,7 @@ from urllib import urlencode
 from hashlib import sha1
 import xml.etree.ElementTree as ET
 import random
-from bigbluebutton.utils import api_call, parse
+from bigbluebutton.utils import api_call, get_parse_result
 
 class Meeting(object):
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
@@ -20,9 +20,7 @@ class Meeting(object):
         query = urlencode((
             ('meetingID', self.meeting_id),
         ))
-        hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        result = parse(urlopen(url).read())
+        result = get_parse_result(self.bbb_api_url, self.salt, call, query)
         if result:
             return result.find('running').text
         else:
@@ -40,9 +38,7 @@ class Meeting(object):
             ('voiceBridge', voicebridge),
             ('welcome', "Welcome!"),
         ))
-        hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        result = parse(urlopen(url).read())
+        result = get_parse_result(self.bbb_api_url, self.salt, call, query)
         if result:
             return result
         else:
