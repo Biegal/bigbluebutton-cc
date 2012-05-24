@@ -114,7 +114,7 @@ class Meeting(object):
         else:
             return 'error'
 
-    def start(self):
+    def start_meeting(self):
         call = 'create' 
         voicebridge = 70000 + random.randint(0,9999)
         query = urlencode((
