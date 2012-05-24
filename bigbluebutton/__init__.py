@@ -7,7 +7,7 @@ import random
 from bigbluebutton.utils import api_call, get_xml
 
 
-class Meeting(object):
+class Meeting_Setup(object):
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
         self.bbb_api_url = bbb_api_url
         self.salt = salt
