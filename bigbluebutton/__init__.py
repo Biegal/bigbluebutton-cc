@@ -16,19 +16,8 @@ class Meeting_Setup(object):
         self.attendee_password = attendee_password
         self.moderator_password = moderator_password
 
-    def is_running(self):
-        call = 'isMeetingRunning'
-        query = urlencode((
-            ('meetingID', self.meeting_id),
-        ))
-        result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if result:
-            return result.find('running').text == 'true'
-        else:
-            return 'error'
-
     def create_meeting(self):
-        if not self.is_running():
+        if not Meeting(self.bbb_api_url, self.salt).is_running(self.meeting_id):
             call = 'create'
             voicebridge = 70000 + random.randint(0, 9999)
             query = urlencode((
@@ -51,6 +40,17 @@ class Meeting(object):
         self.bbb_api_url = bbb_api_url
         self.salt = salt
 
+    def is_running(self, meeting_id):
+        call = 'isMeetingRunning'
+        query = urlencode((
+            ('meetingID', meeting_id),
+        ))
+        result = get_xml(self.bbb_api_url, self.salt, call, query)
+        if result:
+            return result.find('running').text == 'true'
+        else:
+            return 'error'
+        
     def join_url(self, meeting_id, name, password):
         call = 'join'
         query = urlencode((
