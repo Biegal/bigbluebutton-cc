@@ -23,7 +23,18 @@ def api_call(query, call):
     checksum = sha1(prepared).hexdigest()
     result = "%s&checksum=%s" % (query, checksum)
     return result
-    
+
+def join_url(meeting_id, name, password):
+    call = 'join'
+    query = urlencode((
+                       ('fullName', name),
+                       ('meetingID', meeting_id),
+                       ('password', password),
+                       ))
+    hashed = api_call(query, call)
+    url = settings.BBB_API_URL + call + '?' + hashed
+    return url
+
 
 class Meeting(object):
     def __init__(self, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
@@ -133,17 +144,6 @@ class Meeting(object):
         else:
             raise
 
-    @classmethod
-    def join_url(self, meeting_id, name, password):
-        call = 'join'
-        query = urlencode((
-            ('fullName', name),
-            ('meetingID', meeting_id),
-            ('password', password),
-        ))
-        hashed = api_call(query, call)
-        url = settings.BBB_API_URL + call + '?' + hashed
-        return url
 
 if __name__ == '__main__':
     PARSER = argparse.ArgumentParser(description='creates and join a session')
@@ -163,11 +163,11 @@ if __name__ == '__main__':
     SESSION = Meeting(ARGS.meeting_name, ARGS.meeting_id, ARGS.attendee_password, ARGS.moderator_password)
     SESSION.start_meeting()
     print "MODERATOR:"
-    print SESSION.join_url(ARGS.meeting_id, ARGS.moderator, ARGS.moderator_password)
+    print join_url(ARGS.meeting_id, ARGS.moderator, ARGS.moderator_password)
     print '-------------------------------------------'
 
     print "RANDOM USER:"
-    print SESSION.join_url(ARGS.meeting_id, 'RANDOM', ARGS.attendee_password)
+    print join_url(ARGS.meeting_id, 'RANDOM', ARGS.attendee_password)
     print '-------------------------------------------'    
 
     print "ALL MEETINGS"
