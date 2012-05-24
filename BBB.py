@@ -125,7 +125,7 @@ class Meeting(object):
         else:
             return 'error'
 
-    def start_meeting(self):
+    def create_meeting(self):
         call = 'create' 
         voicebridge = 70000 + random.randint(0,9999)
         query = urlencode((
@@ -161,7 +161,7 @@ if __name__ == '__main__':
     ARGS = PARSER.parse_args()
 
     SESSION = Meeting(ARGS.meeting_name, ARGS.meeting_id, ARGS.attendee_password, ARGS.moderator_password)
-    SESSION.start_meeting()
+    SESSION.create_meeting()
     print "MODERATOR:"
     print join_url(ARGS.meeting_id, ARGS.moderator, ARGS.moderator_password)
     print '-------------------------------------------'
