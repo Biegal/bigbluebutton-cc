@@ -18,6 +18,13 @@ def parse(response):
     except:
         return None
 
+def api_call(query, call):
+    prepared = "%s%s%s" % (call, query, settings.SALT)
+    checksum = sha1(prepared).hexdigest()
+    result = "%s&checksum=%s" % (query, checksum)
+    return result
+    
+
 class Meeting(object):
     def __init__(self, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
         self.meeting_name = meeting_name
@@ -25,20 +32,12 @@ class Meeting(object):
         self.attendee_password = attendee_password
         self.moderator_password = moderator_password
 
-
-    @classmethod
-    def api_call(self, query, call):
-        prepared = "%s%s%s" % (call, query, settings.SALT)
-        checksum = sha1(prepared).hexdigest()
-        result = "%s&checksum=%s" % (query, checksum)
-        return result
-
     def is_running(self):
         call = 'isMeetingRunning'
         query = urlencode((
             ('meetingID', self.meeting_id),
         ))
-        hashed = self.api_call(query, call)
+        hashed = api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
@@ -53,7 +52,7 @@ class Meeting(object):
             ('meetingID', meeting_id),
             ('password', password),
         ))
-        hashed = self.api_call(query, call)
+        hashed = api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
@@ -68,7 +67,7 @@ class Meeting(object):
             ('meetingID', meeting_id),
             ('password', password),
         ))
-        hashed = self.api_call(query, call)
+        hashed = api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         r = parse(urlopen(url).read())
         if r:
@@ -92,7 +91,7 @@ class Meeting(object):
         query = urlencode((
             ('random', 'random'),
         ))
-        hashed = self.api_call(query, call)
+        hashed = api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
@@ -126,7 +125,7 @@ class Meeting(object):
             ('voiceBridge', voicebridge),
             ('welcome', "Welcome!"),
         ))
-        hashed = self.api_call(query, call)
+        hashed = api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         result = parse(urlopen(url).read())
         if result:
@@ -142,7 +141,7 @@ class Meeting(object):
             ('meetingID', meeting_id),
             ('password', password),
         ))
-        hashed = self.api_call(query, call)
+        hashed = api_call(query, call)
         url = settings.BBB_API_URL + call + '?' + hashed
         return url
 
