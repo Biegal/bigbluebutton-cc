@@ -13,23 +13,24 @@ def parse(response):
             raise
     except:
         return None
-    
+
 def api_call(salt, query, call):
     prepared = "%s%s%s" % (call, query, salt)
     checksum = sha1(prepared).hexdigest()
     result = "%s&checksum=%s" % (query, checksum)
     return result
-    
+
 def get_xml(bbb_api_url, salt, call, query):
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
     result = parse(urlopen(url).read())
     return result
 
+
 class Utils(object):
     def __init__(self, bbb_api_url=None, salt=None):
-         self.bbb_api_url = bbb_api_url
-         self.salt = salt
+        self.bbb_api_url = bbb_api_url
+        self.salt = salt
 
     def join_url(self, meeting_id, name, password):
         call = 'join'
@@ -53,9 +54,6 @@ class Utils(object):
             pass
         else:
             return 'error'
-
-
-
 
     def meeting_info(self, meeting_id, password):
         call = 'getMeetingInfo'
@@ -105,3 +103,4 @@ class Utils(object):
             return d
         else:
             return 'error'
+

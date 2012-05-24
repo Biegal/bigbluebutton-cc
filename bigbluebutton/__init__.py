@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import random
 from bigbluebutton.utils import api_call, get_xml
 
+
 class Meeting(object):
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
         self.bbb_api_url = bbb_api_url
@@ -26,10 +27,9 @@ class Meeting(object):
         else:
             return 'error'
 
-
     def create_meeting(self):
-        call = 'create' 
-        voicebridge = 70000 + random.randint(0,9999)
+        call = 'create'
+        voicebridge = 70000 + random.randint(0, 9999)
         query = urlencode((
             ('name', self.meeting_name),
             ('meetingID', self.meeting_id),
@@ -44,7 +44,3 @@ class Meeting(object):
         else:
             raise
 
-
-
-    
-    
