@@ -4,7 +4,7 @@ from urllib import urlencode
 from hashlib import sha1
 import xml.etree.ElementTree as ET
 import random
-import settings
+import bbb_settings as settings
 
 def parse(response):
     try:
