@@ -20,7 +20,7 @@ def api_call(salt, query, call):
     result = "%s&checksum=%s" % (query, checksum)
     return result
     
-def get_parse_result(bbb_api_url, salt, call, query):
+def get_xml(bbb_api_url, salt, call, query):
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
     result = parse(urlopen(url).read())
@@ -48,7 +48,7 @@ class Utils(object):
                            ('meetingID', meeting_id),
                            ('password', password),
         ))
-        result = get_parse_result(self.bbb_api_url, self.salt, call, query)
+        result = get_xml(self.bbb_api_url, self.salt, call, query)
         if result:
             pass
         else:
@@ -63,7 +63,7 @@ class Utils(object):
                            ('meetingID', meeting_id),
                            ('password', password),
                            ))
-        r = get_parse_result(self.bbb_api_url, self.salt, call, query)
+        r = get_xml(self.bbb_api_url, self.salt, call, query)
         if r:
             # Create dict of values for easy use in template
             d = {
@@ -85,7 +85,7 @@ class Utils(object):
                            ('random', 'random'),
                            ))
 
-        result = get_parse_result(self.bbb_api_url, self.salt, call, query)
+        result = get_xml(self.bbb_api_url, self.salt, call, query)
         if result:
             # Create dict of values for easy use in template
             d = []
