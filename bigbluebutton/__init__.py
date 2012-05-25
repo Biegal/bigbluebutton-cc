@@ -82,7 +82,8 @@ class Meeting(object):
 
     def is_running(self, meeting_id):
         """
-        This call enables you to simply check on whether or not a meeting is running by looking it up with your meeting ID.
+        This call enables you to simply check on whether or not a meeting is 
+        running by looking it up with your meeting ID.
         
         :param meeting_id: ID that can be used to identify the meeting
         """
@@ -101,9 +102,11 @@ class Meeting(object):
         generates the url for accessing a meeting 
         
         :param meeting_id: ID that can be used to identify the meeting
-        :param name: The name that is to be used to identify this user to other conference attendees.
+        :param name: The name that is to be used to identify this user to 
+                     other conference attendees.
         :param password: The password that this attendee is using. 
-                         If the moderator password is supplied, he will be given moderator status 
+                         If the moderator password is supplied, he will be 
+                         given moderator status 
                          (and the same for attendee password, etc)
         """
         call = 'join'
@@ -121,7 +124,8 @@ class Meeting(object):
         Use this to forcibly end a meeting and kick all participants out of the meeting.
         
         :param meetingID: The meeting ID that identifies the meeting you are attempting to end.
-        :param password: The moderator password for this meeting. You can not end a meeting using the attendee password.
+        :param password: The moderator password for this meeting.
+                         You can not end a meeting using the attendee password.
         """
         call = 'end'
         query = urlencode((
@@ -136,10 +140,13 @@ class Meeting(object):
 
     def meeting_info(self, meeting_id, password):
         """
-        This call will return all of a meeting's information, including the list of attendees as well as start and end times.
+        This call will return all of a meeting's information, 
+        including the list of attendees as well as start and end times.
 
-        :param meetingID: The meeting ID that identifies the meeting you are attempting to end.
-        :param password: The moderator password for this meeting. You can not end a meeting using the attendee password.
+        :param meetingID: The meeting ID that identifies the meeting you are 
+                          attempting to end.
+        :param password: The moderator password for this meeting.
+                         You can not end a meeting using the attendee password.
         """
         call = 'getMeetingInfo'
         query = urlencode((
