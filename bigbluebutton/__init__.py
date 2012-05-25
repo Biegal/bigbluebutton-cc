@@ -143,10 +143,8 @@ class Meeting(object):
         This call will return all of a meeting's information, 
         including the list of attendees as well as start and end times.
 
-        :param meetingID: The meeting ID that identifies the meeting you are 
-                          attempting to end.
+        :param meetingID: The meeting ID that identifies the meeting
         :param password: The moderator password for this meeting.
-                         You can not end a meeting using the attendee password.
         """
         call = 'getMeetingInfo'
         query = urlencode((
