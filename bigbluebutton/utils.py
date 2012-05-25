@@ -1,3 +1,14 @@
+# Copyright: 2011 Steve Challis (http://schallis.com)
+# Copyright: 2012 MoinMoin:ReimarBauer
+# License: MIT 
+
+"""
+    bigbluebutton.utils
+
+    This module contains helper functions to access bigbluebutton servers
+    
+"""
+
 from urllib2 import urlopen
 from hashlib import sha1
 import xml.etree.ElementTree as ET

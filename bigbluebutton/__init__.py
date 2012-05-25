@@ -1,4 +1,17 @@
+# Copyright: 2011 Steve Challis (http://schallis.com)
+# Copyright: 2012 MoinMoin:ReimarBauer
+# License: MIT 
 
+"""
+    bigbluebutton
+
+    
+
+    This module contains functions to access bigbluebutton servers
+    Meeting_Setup: for initializing a meeting.
+    Meeting: for operations on the meeting after initializing.
+    
+"""
 from urllib2 import urlopen
 from urllib import urlencode
 from hashlib import sha1
