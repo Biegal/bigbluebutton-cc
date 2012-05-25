@@ -14,6 +14,9 @@ from hashlib import sha1
 import xml.etree.ElementTree as ET
 
 def parse(response):
+    """
+    :param reponse: XML Data 
+    """
     try:
         xml = ET.XML(response)
         code = xml.find('returncode').text
@@ -25,12 +28,27 @@ def parse(response):
         return None
 
 def api_call(salt, query, call):
+    """
+    builds the hash based on the call, query and salt
+    
+    :param salt: The security salt defined for your bigbluebutton instance
+    :param query: The query parameters for calling the bigbluebutton resource
+    :param call: The bigbluebutton resource name
+    """
     prepared = "%s%s%s" % (call, query, salt)
     checksum = sha1(prepared).hexdigest()
     result = "%s&checksum=%s" % (query, checksum)
     return result
 
 def get_xml(bbb_api_url, salt, call, query):
+    """
+    gets XML from the bigbluebutton ressource
+    
+    :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
+    :param salt: The security salt defined for your bigbluebutton instance
+    :param call: The bigbluebutton resource name
+    :param query: The query parameters for calling the bigbluebutton resource
+    """
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
     result = parse(urlopen(url).read())

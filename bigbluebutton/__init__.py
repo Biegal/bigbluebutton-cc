@@ -21,7 +21,24 @@ from bigbluebutton.utils import api_call, get_xml
 
 
 class Meeting_Setup(object):
+    """
+    Initializes meetings
+    """
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
+        """
+        :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
+        :param salt: The security salt defined for your bigbluebutton instance
+        :param meeting_name: A name for the meeting.
+        :param meeting_id: A meeting ID that can be used to identify this meeting by the third party application.
+                           This must be unique to the server that you are calling. If you supply a non-unique meeting ID,
+                           you will still have a successful call, but will receive a warning message in the response.
+                           If you intend to use the recording feature, the meetingID shouldn't contain commas.
+        :param attendee_password: The password that will be required for attendees to join the meeting. 
+                                  This is optional, and if not supplied, BBB will assign a random password.
+        :param moderator_password:  The password that will be required for moderators to join the meeting or
+                                    for certain administrative actions (i.e. ending a meeting). This is optional,
+                                    and if not supplied, BBB will assign a random password.
+        """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
         self.meeting_name = meeting_name
@@ -30,6 +47,9 @@ class Meeting_Setup(object):
         self.moderator_password = moderator_password
 
     def create_meeting(self):
+        """
+        creates the meeting
+        """
         if not Meeting(self.bbb_api_url, self.salt).is_running(self.meeting_id):
             call = 'create'
             voicebridge = 70000 + random.randint(0, 9999)
@@ -49,11 +69,23 @@ class Meeting_Setup(object):
 
 
 class Meeting(object):
+    """
+    gives access to meetings 
+    """
     def __init__(self, bbb_api_url=None, salt=None):
+        """
+        :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
+        :param salt: The security salt defined for your bigbluebutton instance
+        """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
 
     def is_running(self, meeting_id):
+        """
+        This call enables you to simply check on whether or not a meeting is running by looking it up with your meeting ID.
+        
+        :param meeting_id: ID that can be used to identify the meeting
+        """
         call = 'isMeetingRunning'
         query = urlencode((
             ('meetingID', meeting_id),
@@ -65,6 +97,15 @@ class Meeting(object):
             return 'error'
         
     def join_url(self, meeting_id, name, password):
+        """
+        generates the url for accessing a meeting 
+        
+        :param meeting_id: ID that can be used to identify the meeting
+        :param name: The name that is to be used to identify this user to other conference attendees.
+        :param password: The password that this attendee is using. 
+                         If the moderator password is supplied, he will be given moderator status 
+                         (and the same for attendee password, etc)
+        """
         call = 'join'
         query = urlencode((
                            ('fullName', name),
@@ -76,6 +117,12 @@ class Meeting(object):
         return url
 
     def end_meeting(self, meeting_id, password):
+        """
+        Use this to forcibly end a meeting and kick all participants out of the meeting.
+        
+        :param meetingID: The meeting ID that identifies the meeting you are attempting to end.
+        :param password: The moderator password for this meeting. You can not end a meeting using the attendee password.
+        """
         call = 'end'
         query = urlencode((
                            ('meetingID', meeting_id),
@@ -88,6 +135,12 @@ class Meeting(object):
             return 'error'
 
     def meeting_info(self, meeting_id, password):
+        """
+        This call will return all of a meeting's information, including the list of attendees as well as start and end times.
+
+        :param meetingID: The meeting ID that identifies the meeting you are attempting to end.
+        :param password: The moderator password for this meeting. You can not end a meeting using the attendee password.
+        """
         call = 'getMeetingInfo'
         query = urlencode((
                            ('meetingID', meeting_id),
@@ -110,6 +163,9 @@ class Meeting(object):
             return None
 
     def get_meetings(self):
+        """
+        This call will return a list of all the meetings found on this server.
+        """
         call = 'getMeetings'
         query = urlencode((
                            ('random', 'random'),
