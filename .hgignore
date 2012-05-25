@@ -2,3 +2,5 @@
 \.pydevproject
 bbb_settings.py
 
+bigbluebutton.egg-info/*
+dist/*
