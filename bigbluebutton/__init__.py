@@ -63,9 +63,9 @@ class Meeting_Setup(object):
             ))
             result = get_xml(self.bbb_api_url, self.salt, call, query)
             if result:
-                return result
+                return True
             else:
-                raise
+                return False
 
 
 class Meeting(object):
@@ -92,10 +92,7 @@ class Meeting(object):
             ('meetingID', meeting_id),
         ))
         result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if result:
-            return result.find('running').text == 'true'
-        else:
-            return 'error'
+        return result.find('running').text == 'true'
         
     def join_url(self, meeting_id, name, password):
         """
@@ -134,9 +131,9 @@ class Meeting(object):
         ))
         result = get_xml(self.bbb_api_url, self.salt, call, query)
         if result:
-            pass
+            return True
         else:
-            return 'error'
+            return False
 
     def meeting_info(self, meeting_id, password):
         """
@@ -195,5 +192,5 @@ class Meeting(object):
                           })
             return d
         else:
-            return 'error'
+            return None
 

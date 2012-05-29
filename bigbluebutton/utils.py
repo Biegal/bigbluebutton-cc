@@ -37,8 +37,7 @@ def api_call(salt, query, call):
     """
     prepared = "%s%s%s" % (call, query, salt)
     checksum = sha1(prepared).hexdigest()
-    result = "%s&checksum=%s" % (query, checksum)
-    return result
+    return "%s&checksum=%s" % (query, checksum)
 
 def get_xml(bbb_api_url, salt, call, query):
     """
@@ -51,5 +50,5 @@ def get_xml(bbb_api_url, salt, call, query):
     """
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
-    result = parse(urlopen(url).read())
-    return result
+    return parse(urlopen(url).read())
+
