@@ -6,7 +6,7 @@ requires = []
 
 setup(
     name='bigbluebutton',
-    version='0.1.0',
+    version='0.1.1',
     author='Reimar Bauer',
     maintainer='Reimar Bauer',
     maintainer_email='rb.proj@googlemail.com',
