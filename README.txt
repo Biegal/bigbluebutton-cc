@@ -28,8 +28,11 @@ if __name__ == '__main__':
 
     ARGS = PARSER.parse_args()
 
-    session = Meeting_Setup(bbb_settings.BBB_API_URL, bbb_settings.SALT, ARGS.meeting_name, ARGS.meeting_id, ARGS.attendee_password, ARGS.moderator_password)
+    session = Meeting_Setup(bbb_settings.BBB_API_URL, bbb_settings.SALT,
+                            ARGS.meeting_name, ARGS.meeting_id,
+                            ARGS.attendee_password, ARGS.moderator_password)
     session.create_meeting()
+    print "meeting expires if noone joins in"
     
     meeting = Meeting(bbb_settings.BBB_API_URL, bbb_settings.SALT)
     print "MODERATOR:"
