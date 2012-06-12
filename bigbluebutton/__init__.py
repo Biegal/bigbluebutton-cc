@@ -24,7 +24,10 @@ class Meeting_Setup(object):
     """
     Initializes meetings
     """
-    def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', attendee_password=None, moderator_password=None):
+    def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', 
+                 attendee_password=None, moderator_password=None,
+                 logout_url=None, max_participants=-1, duration=0,
+                 ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
         :param salt: The security salt defined for your bigbluebutton instance
@@ -38,6 +41,17 @@ class Meeting_Setup(object):
         :param moderator_password:  The password that will be required for moderators to join the meeting or
                                     for certain administrative actions (i.e. ending a meeting). This is optional,
                                     and if not supplied, BBB will assign a random password.
+        :param logout_url: The URL that the BigBlueButton client will go to after users click the OK button on
+                           the 'You have been logged out message'. This overrides, the value for bigbluebutton.web.loggedOutURL
+                           if defined in bigbluebutton.properties
+        :param max_participants: The maximum number of participants to allow into the meeting (including moderators). 
+                                 After this number of participants have joined, BBB will return an appropriate error for other
+                                 users trying to join the meeting. A negative number indicates that an unlimited number of participants
+                                 should be allowed (this is the default setting).
+        :param duration: The duration parameter allows to specify the number of minutes for the meeting's length.
+                         When the length of the meeting reaches the duration, BigBlueButton automatically ends the meeting.
+                         The default is 0, which means the meeting continues until the last person leaves or an end API calls is
+                         made with the associated meetingID.
         """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
@@ -45,6 +59,9 @@ class Meeting_Setup(object):
         self.meeting_id = meeting_id
         self.attendee_password = attendee_password
         self.moderator_password = moderator_password
+        self.logout_url = logout_url
+        self.max_participants = max_participants
+        self.duration = duration
 
     def create_meeting(self):
         """
@@ -60,6 +77,9 @@ class Meeting_Setup(object):
                 ('moderatorPW', self.moderator_password),
                 ('voiceBridge', voicebridge),
                 ('welcome', "Welcome!"),
+                ('logoutURL', self.logout_url),
+                ('maxParticipants', self.max_participants),
+                ('duration', self.duration),
             ))
             result = get_xml(self.bbb_api_url, self.salt, call, query)
             if result:
