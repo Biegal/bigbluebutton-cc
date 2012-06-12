@@ -116,6 +116,24 @@ class Meeting(object):
         url = self.bbb_api_url + call + '?' + hashed
         return url
 
+    def end_meeting_url(self, meeting_id, password):
+        """
+        Use this to generate the url to end a meeting
+
+        :param meetingID: The meeting ID that identifies the meeting you are attempting to end.
+        :param password: The moderator password for this meeting.
+                         You can not end a meeting using the attendee password.
+        """
+        call = 'end'
+        query = urlencode((
+                           ('meetingID', meeting_id),
+                           ('password', password),
+        ))
+
+        hashed = api_call(self.salt, query, call)
+        url = self.bbb_api_url + call + '?' + hashed
+        return url
+
     def end_meeting(self, meeting_id, password):
         """
         Use this to forcibly end a meeting and kick all participants out of the meeting.
