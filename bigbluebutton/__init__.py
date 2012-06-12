@@ -26,7 +26,7 @@ class Meeting_Setup(object):
     """
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', 
                  attendee_password=None, moderator_password=None,
-                 logout_url=None, max_participants=-1, duration=0,
+                 logout_url=None, max_participants=-1, duration=0, welcome=u'Welcome!',
                  ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
@@ -52,6 +52,9 @@ class Meeting_Setup(object):
                          When the length of the meeting reaches the duration, BigBlueButton automatically ends the meeting.
                          The default is 0, which means the meeting continues until the last person leaves or an end API calls is
                          made with the associated meetingID.
+        :param welcome: A welcome message that gets displayed on the chat window when the participant joins.
+                        You can include keywords (%%CONFNAME%%, %%DIALNUM%%, %%CONFNUM%%) which will be substituted automatically.
+                        You can set a default welcome message on bigbluebutton.properties
         """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
@@ -62,6 +65,7 @@ class Meeting_Setup(object):
         self.logout_url = logout_url
         self.max_participants = max_participants
         self.duration = duration
+        self.welcome = welcome
 
     def create_meeting(self):
         """
@@ -76,7 +80,7 @@ class Meeting_Setup(object):
                 ('attendeePW', self.attendee_password),
                 ('moderatorPW', self.moderator_password),
                 ('voiceBridge', voicebridge),
-                ('welcome', "Welcome!"),
+                ('welcome', self.welcome),
                 ('logoutURL', self.logout_url),
                 ('maxParticipants', self.max_participants),
                 ('duration', self.duration),
