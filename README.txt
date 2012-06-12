@@ -51,6 +51,11 @@ if __name__ == '__main__':
     print meeting.is_running(ARGS.meeting_id)
     print '-------------------------------------------'
 
+    print "END MEETING URL"
+    print meeting.end_meeting_url(ARGS.meeting_id, ARGS.moderator_password)
+    print '-------------------------------------------'
+
+
     if meeting.is_running(ARGS.meeting_id):
         print "END MEETING"
         meeting.end_meeting(ARGS.meeting_id, ARGS.moderator_password)
