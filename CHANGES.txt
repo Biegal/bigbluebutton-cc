@@ -1,0 +1,1 @@
+0.1.0 initial version of bigbluebutton python api with some creation parameters
