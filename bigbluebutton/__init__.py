@@ -26,7 +26,7 @@ class Meeting_Setup(object):
     """
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', 
                  attendee_password=None, moderator_password=None,
-                 logout_url=None, max_participants=-1, duration=0, welcome=u'Welcome!',
+                 logout_url='', max_participants=-1, duration=0, welcome=u'Welcome!',
                  ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
