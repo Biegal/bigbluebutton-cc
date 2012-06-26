@@ -195,12 +195,13 @@ class Meeting(object):
             # Create dict of values for easy use in template
             users = []
             attendees = r.find('attendees')
-            for attendee in attendees.getchildren():
-                user = {}
-                user['user_id'] = attendee.find('userID').text
-                user['name'] = attendee.find('fullName').text
-                user['role'] = attendee.find('role').text
-                users.append(user)
+            if attendees:
+                for attendee in attendees.getchildren():
+                    user = {}
+                    user['user_id'] = attendee.find('userID').text
+                    user['name'] = attendee.find('fullName').text
+                    user['role'] = attendee.find('role').text
+                    users.append(user)
 
             d = {
                  'meeting_name': r.find('meetingName').text,
