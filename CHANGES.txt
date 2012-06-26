@@ -1,3 +1,9 @@
+Current
+-------
+extended and refactored  meeting_info to get all 0.8 attributes
+
+
+
 0.2.1
 -----
 

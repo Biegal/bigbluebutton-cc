@@ -193,14 +193,31 @@ class Meeting(object):
         r = get_xml(self.bbb_api_url, self.salt, call, query)
         if r:
             # Create dict of values for easy use in template
+            users = []
+            attendees = r.find('attendees')
+            for attendee in attendees.getchildren():
+                user = {}
+                user['user_id'] = attendee.find('userID').text
+                user['name'] = attendee.find('fullName').text
+                user['role'] = attendee.find('role').text
+                users.append(user)
+            
             d = {
-                 'start_time': r.find('startTime').text,
-                 'end_time': r.find('endTime').text,
-                 'participant_count': r.find('participantCount').text,
-                 'moderator_count': r.find('moderatorCount').text,
-                 'moderator_pw': r.find('moderatorPW').text,
+                 'meeting_name': r.find('meetingName').text,
+                 'meeting_id': r.find('meetingID').text,
+                 'create_time': int(r.find('createTime').text),
+                 'voice_bridge': int(r.find('voiceBridge').text),
                  'attendee_pw': r.find('attendeePW').text,
-                 'invite_url': 'join=%s' % meeting_id,
+                 'moderator_pw': r.find('moderatorPW').text,
+                 'running': r.find('running').text == "true",
+                 'recording': r.find('recording').text == "true",
+                 'has_been_forcibly_ended': r.find('hasBeenForciblyEnded').text == "true",
+                 'start_time': int(r.find('startTime').text),
+                 'end_time': int(r.find('endTime').text),
+                 'participant_count': int(r.find('participantCount').text),
+                 'max_users': int(r.find('maxUsers').text),
+                 'moderator_count': int(r.find('moderatorCount').text),
+                 'users': users
                  }
             return d
         else:
