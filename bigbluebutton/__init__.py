@@ -5,12 +5,12 @@
 """
     bigbluebutton
 
-    
+ 
 
     This module contains functions to access bigbluebutton servers
     Meeting_Setup: for initializing a meeting.
     Meeting: for operations on the meeting after initializing.
-    
+ 
 """
 from urllib2 import urlopen
 from urllib import urlencode
@@ -24,7 +24,7 @@ class Meeting_Setup(object):
     """
     Initializes meetings
     """
-    def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='', 
+    def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='',
                  attendee_password=None, moderator_password=None,
                  logout_url='', max_participants=-1, duration=0, welcome=u'Welcome!',
                  ):
@@ -117,7 +117,7 @@ class Meeting(object):
         ))
         result = get_xml(self.bbb_api_url, self.salt, call, query)
         return result.find('running').text == 'true'
-        
+
     def join_url(self, meeting_id, name, password):
         """
         generates the url for accessing a meeting 
@@ -201,7 +201,7 @@ class Meeting(object):
                 user['name'] = attendee.find('fullName').text
                 user['role'] = attendee.find('role').text
                 users.append(user)
-            
+
             d = {
                  'meeting_name': r.find('meetingName').text,
                  'meeting_id': r.find('meetingID').text,

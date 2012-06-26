@@ -6,7 +6,7 @@
     bigbluebutton.utils
 
     This module contains helper functions to access bigbluebutton servers
-    
+
 """
 
 from urllib2 import urlopen
