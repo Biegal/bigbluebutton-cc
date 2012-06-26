@@ -251,6 +251,9 @@ class Meeting(object):
                           'running': m.find('running').text,
                           'moderator_pw': password,
                           'attendee_pw': m.find('attendeePW').text,
+                          'has_been_forcibly_ended': m.find('hasBeenForciblyEnded').text == "true",
+                          'running': m.find('running').text == "true",
+                          'create_time': int(m.find('createTime').text),
                           'info': self.meeting_info(
                                                meeting_id,
                                                password)
