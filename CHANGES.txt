@@ -1,5 +1,5 @@
-Current:
---------
+0.2.1
+-----
 
 Meeting_Setup: logout_url parameter changed from None to ''.
                This points to the default url given in the config of bigbluebutton.
