@@ -27,6 +27,7 @@ class Meeting_Setup(object):
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='',
                  attendee_password=None, moderator_password=None,
                  logout_url='', max_participants=-1, duration=0, welcome=u'Welcome!',
+                 record=False,
                  ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
@@ -55,6 +56,8 @@ class Meeting_Setup(object):
         :param welcome: A welcome message that gets displayed on the chat window when the participant joins.
                         You can include keywords (%%CONFNAME%%, %%DIALNUM%%, %%CONFNUM%%) which will be substituted automatically.
                         You can set a default welcome message on bigbluebutton.properties
+        :param record: Setting record=True instructs the BigBlueButton server to record the media and events in the session for 
+                       later playback. Available values are true or false. Default value is false.
         """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
@@ -66,6 +69,7 @@ class Meeting_Setup(object):
         self.max_participants = max_participants
         self.duration = duration
         self.welcome = welcome
+        self.record = str(record).lower()
 
     def create_meeting(self):
         """
@@ -84,6 +88,7 @@ class Meeting_Setup(object):
                 ('logoutURL', self.logout_url),
                 ('maxParticipants', self.max_participants),
                 ('duration', self.duration),
+                ('record', self.record),
             ))
             result = get_xml(self.bbb_api_url, self.salt, call, query)
             if result:
