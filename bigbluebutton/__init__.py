@@ -262,3 +262,64 @@ class Meeting(object):
         else:
             return None
 
+    def get_recordings(self, meeting_id):
+        """
+        Retrieves the recordings that are available for playback for a given meetingID (or set of meeting IDs).
+        
+        :param meetingID: The meeting ID that identifies the meeting 
+        """
+        call = 'getRecordings'
+        query = urlencode((
+                           ('meetingID', meeting_id),
+                           ))
+        r = get_xml(self.bbb_api_url, self.salt, call, query)
+        # ToDO implement more keys
+        if r:
+            recordings = r.find('recording')
+            records = []
+            for session in recordings.getchildren():
+                record = {}
+                record['record_id'] = attendee.find('recordID').text
+                record['meeting_id'] = attendee.find('meetingID').text
+                record['meeting_name'] = attendee.find('name').text
+                record['published'] = attendee.find('published').text == "true"
+                record['start_time'] = attendee.find('startTime').text
+                record['end_time'] = attendee.find('endTime').text
+                records.append(record)
+            return records
+        else:
+            return None
+
+    def publish_recordings(self, record_id, publish=False):
+        """
+        Publish and unpublish recordings for a given recordID (or set of record IDs).
+
+        :param record_id: A record ID for specify the recordings to apply the publish action.
+                         It can be a set of meetingIDs separate by commas.
+        :param publish: The value for publish or unpublish the recording(s). Available values: True or False. 
+        """
+        call = 'publishRecordings'
+        query = urlencode((
+                           ('recordID', meeting_id),
+                            'publish', str(publish).lower()
+                           ))
+        r = get_xml(self.bbb_api_url, self.salt, call, query)
+        if r:
+            return r.find('published').text == 'true'
+        return False
+
+    def delete_recordings(self, record_id):
+        """
+        Delete one or more recordings for a given recordID (or set of record IDs).
+        
+        :param record_id: A record ID for specify the recordings to delete. It can be a set of meetingIDs separate by commas. 
+        """
+        call = 'deleteRecordings'
+        query = urlencode((
+                           ('recordID', meeting_id),
+                            'publish', str(publish).lower()
+                           ))
+        r = get_xml(self.bbb_api_url, self.salt, call, query)
+        if r:
+            return r.find('deleted').text == 'true'
+        return False
