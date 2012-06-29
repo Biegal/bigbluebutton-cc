@@ -1,7 +1,7 @@
-Current
--------
+0.3
+---
 extended and refactored meeting_info to get all 0.8 attributes
-
+API calls for recordings added
 
 
 0.2.1
