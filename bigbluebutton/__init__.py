@@ -23,8 +23,11 @@ class Meeting_Setup(object):
     """
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='',
                  attendee_password=None, moderator_password=None,
-                 logout_url='', max_participants=-1, duration=0, welcome=u'Welcome!',
-                 record=False, pre_upload_slide=None
+                 logout_url='', max_participants=-1, duration=0, dial_number='',
+                 welcome=u'Welcome!',
+                 moderator_only_message=u'', meta=u'',
+                 record=False, auto_start_recording=False, allow_start_stop_recording=True,
+                 pre_upload_slide=None
                  ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
@@ -50,12 +53,21 @@ class Meeting_Setup(object):
                          When the length of the meeting reaches the duration, BigBlueButton automatically ends the meeting.
                          The default is 0, which means the meeting continues until the last person leaves or an end API calls is
                          made with the associated meetingID.
+        :param dial_number: The dial access number that participants can call in using regular phone.
         :param welcome: A welcome message that gets displayed on the chat window when the participant joins.
                         You can include keywords (%%CONFNAME%%, %%DIALNUM%%, %%CONFNUM%%) which will be substituted automatically.
                         You can set a default welcome message on bigbluebutton.properties
+        :param moderator_only_message: Display a message to all moderators in the public chat.
+        :param meta: You can pass one or more metadata values for create a meeting.
+                    These will be stored by BigBlueButton and later retrievable via the getMeetingInfo call and getRecordings.
+                    Examples of meta parameters are meta_Presenter, meta_category, meta_LABEL, etc.
+                    All parameters are converted to lower case, so meta_Presenter would be the same as meta_PRESENTER.
         :param record: Setting record=True instructs the BigBlueButton server to record the media and events in the session for 
                        later playback. Available values are true or false. Default value is false.
-        :param  pre_upload_slide: You can preupload slides within the create call by providing an URL to the slides.
+        :param auto_start_recording: Default=False, Setting start_recording=True will automatically starts recording when first user joins.
+                                     NOTE: Don't set to autoStartRecording =false and allowStartStopRecording=false as the user won't be able to record.
+        :param allow_start_stop_recording: Default=True, Allow the user to start/stop recording. This means the meeting can start recording automatically (autoStartRecording=true) with the user able to stop/start recording from the client.
+        :param pre_upload_slide: You can preupload slides within the create call by providing an URL to the slides.
         """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
@@ -66,8 +78,13 @@ class Meeting_Setup(object):
         self.logout_url = logout_url
         self.max_participants = max_participants
         self.duration = duration
+        self.dial_number = dial_number
         self.welcome = welcome
         self.record = str(record).lower()
+        self.moderator_only_message = moderator_only_message
+        self.meta = meta
+        self.allow_start_stop_recording = allow_start_stop_recording
+        self.auto_start_recording = auto_start_recording
         self.pre_upload_slide = pre_upload_slide
 
     def create_meeting(self):
@@ -83,11 +100,17 @@ class Meeting_Setup(object):
                 ('attendeePW', self.attendee_password),
                 ('moderatorPW', self.moderator_password),
                 ('voiceBridge', voicebridge),
+                ('dialNumber', self.dial_number),
                 ('welcome', self.welcome),
                 ('logoutURL', self.logout_url),
                 ('maxParticipants', self.max_participants),
                 ('duration', self.duration),
                 ('record', self.record),
+                ('meta', self.meta),
+                ('moderatorOnlyMessage', self.moderator_only_message),
+                ('autoStartRecording', self.auto_start_recording),
+                ('allowStartStopRecording', self.allow_start_stop_recording),
+
             ))
             result = get_xml(self.bbb_api_url, self.salt, call, query, self.pre_upload_slide)
             if len(result):
