@@ -12,11 +12,8 @@
     Meeting: for operations on the meeting after initializing.
  
 """
-from urllib2 import urlopen
-from urllib import urlencode
-from hashlib import sha1
-import xml.etree.ElementTree as ET
 import random
+from urllib import urlencode
 from bigbluebutton.utils import api_call, get_xml
 
 

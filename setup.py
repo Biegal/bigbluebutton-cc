@@ -2,7 +2,7 @@ long_description = open('README.txt').read()
 
 from setuptools import setup, find_packages
 
-requires = []
+requires = ["requests"]
 
 setup(
     name='bigbluebutton',

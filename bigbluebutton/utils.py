@@ -8,8 +8,7 @@
     This module contains helper functions to access bigbluebutton servers
 
 """
-
-from urllib2 import urlopen
+import requests
 from hashlib import sha1
 import xml.etree.ElementTree as ET
 
@@ -18,7 +17,7 @@ def parse(response):
     :param reponse: XML Data 
     """
     try:
-        xml = ET.XML(response)
+        xml = ET.fromstring(response)
         code = xml.find('returncode').text
         if code == 'SUCCESS':
             return xml
@@ -50,5 +49,5 @@ def get_xml(bbb_api_url, salt, call, query):
     """
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
-    return parse(urlopen(url).read())
+    return parse(requests.get(url).content)
 
