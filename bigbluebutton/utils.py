@@ -9,8 +9,8 @@
 
 """
 import requests
-from hashlib import sha1
 import xml.etree.ElementTree as ET
+from hashlib import sha1
 
 def parse(response):
     """
@@ -38,16 +38,22 @@ def api_call(salt, query, call):
     checksum = sha1(prepared).hexdigest()
     return "%s&checksum=%s" % (query, checksum)
 
-def get_xml(bbb_api_url, salt, call, query):
+def get_xml(bbb_api_url, salt, call, query, pre_upload_slide=None):
     """
     gets XML from the bigbluebutton ressource
-    
+
     :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
     :param salt: The security salt defined for your bigbluebutton instance
     :param call: The bigbluebutton resource name
     :param query: The query parameters for calling the bigbluebutton resource
+    :param pre_upload_slide: on create a file could be uploaded
     """
+
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
-    return parse(requests.get(url).content)
-
+    if call == "create" and pre_upload_slide is not None:
+        xml = "<?xml version='1.0' encoding='UTF-8'?> <modules> <module name='presentation'> <document url='%(pre_upload_slide)s'/> </module></modules>" % {"pre_upload_slide": pre_upload_slide}
+        headers = {'Content-Type': 'application/xml'}
+        return parse(requests.post(url, data=xml, headers=headers).content)
+    else:
+        return parse(requests.get(url).content)

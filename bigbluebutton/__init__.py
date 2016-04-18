@@ -24,7 +24,7 @@ class Meeting_Setup(object):
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='',
                  attendee_password=None, moderator_password=None,
                  logout_url='', max_participants=-1, duration=0, welcome=u'Welcome!',
-                 record=False,
+                 record=False, pre_upload_slide=None
                  ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
@@ -55,6 +55,7 @@ class Meeting_Setup(object):
                         You can set a default welcome message on bigbluebutton.properties
         :param record: Setting record=True instructs the BigBlueButton server to record the media and events in the session for 
                        later playback. Available values are true or false. Default value is false.
+        :param  pre_upload_slide: You can preupload slides within the create call by providing an URL to the slides.
         """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
@@ -67,6 +68,7 @@ class Meeting_Setup(object):
         self.duration = duration
         self.welcome = welcome
         self.record = str(record).lower()
+        self.pre_upload_slide = pre_upload_slide
 
     def create_meeting(self):
         """
@@ -87,7 +89,7 @@ class Meeting_Setup(object):
                 ('duration', self.duration),
                 ('record', self.record),
             ))
-            result = get_xml(self.bbb_api_url, self.salt, call, query)
+            result = get_xml(self.bbb_api_url, self.salt, call, query, self.pre_upload_slide)
             if len(result):
                 return True
             else:
