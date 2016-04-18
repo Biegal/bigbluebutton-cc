@@ -25,12 +25,15 @@ if __name__ == '__main__':
                        help='password for moderator')
     PARSER.add_argument( '--attendee_password', dest='attendee_password', required=True,
                        help='password for attendee')
+    PARSER.add_argument( '--url', dest='url', required=True,
+                       help='pre upload url')
 
     ARGS = PARSER.parse_args()
 
     session = Meeting_Setup(bbb_settings.BBB_API_URL, bbb_settings.SALT,
                             ARGS.meeting_name, ARGS.meeting_id,
-                            ARGS.attendee_password, ARGS.moderator_password)
+                            ARGS.attendee_password, ARGS.moderator_password,
+                            pre_upload_slide=ARGS.url)
     session.create_meeting()
     print "meeting expires if noone joins in"
     
