@@ -113,7 +113,7 @@ class Meeting_Setup(object):
 
             ))
             result = get_xml(self.bbb_api_url, self.salt, call, query, self.pre_upload_slide)
-            if len(result):
+            if result is not None:
                 return True
             else:
                 return False
@@ -199,7 +199,7 @@ class Meeting(object):
                            ('password', password),
         ))
         result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if len(result):
+        if result is not None:
             return True
         else:
             return False
@@ -218,7 +218,7 @@ class Meeting(object):
                            ('password', password),
                            ))
         r = get_xml(self.bbb_api_url, self.salt, call, query)
-        if len(r):
+        if r is not None:
             # Create dict of values for easy use in template
             users = []
             attendees = r.find('attendees')
@@ -261,7 +261,7 @@ class Meeting(object):
                            ))
 
         result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if len(result):
+        if result is not None:
             # Create dict of values for easy use in template
             d = []
             r = result[1].findall('meeting')
@@ -296,7 +296,7 @@ class Meeting(object):
                            ))
         r = get_xml(self.bbb_api_url, self.salt, call, query)
         # ToDO implement more keys
-        if len(r):
+        if r is not None:
             recordings = r.find('recording')
             records = []
             for session in recordings.getchildren():
@@ -326,7 +326,7 @@ class Meeting(object):
                             'publish', str(publish).lower()
                            ))
         r = get_xml(self.bbb_api_url, self.salt, call, query)
-        if len(r):
+        if r is not None:
             return r.find('published').text == 'true'
         return False
 
@@ -342,6 +342,6 @@ class Meeting(object):
                             'publish', str(publish).lower()
                            ))
         r = get_xml(self.bbb_api_url, self.salt, call, query)
-        if len(r):
+        if r is not None:
             return r.find('deleted').text == 'true'
         return False
