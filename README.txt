@@ -6,7 +6,7 @@ The work of this project is derivated from https://github.com/schallis/django-bi
 It is a wrapper for accessing the API of bigbluebutton http://code.google.com/p/bigbluebutton/wiki/API
 
 
-A simple example ::
+A simple example::
 
 import argparse
 from bigbluebutton import Meeting_Setup, Meeting
@@ -63,4 +63,3 @@ if __name__ == '__main__':
         print "END MEETING"
         meeting.end_meeting(ARGS.meeting_id, ARGS.moderator_password)
         print '-------------------------------------------'
-    
