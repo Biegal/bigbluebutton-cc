@@ -1,6 +1,6 @@
 # Copyright: 2011 Steve Challis (http://schallis.com)
 # Copyright: 2012-2016 MoinMoin:ReimarBauer
-# License: MIT 
+# License: MIT
 
 """
     bigbluebutton.utils
@@ -14,7 +14,7 @@ from hashlib import sha1
 
 def parse(response):
     """
-    :param reponse: XML Data 
+    :param reponse: XML Data
     """
     try:
         xml = ET.fromstring(response)
@@ -29,7 +29,7 @@ def parse(response):
 def api_call(salt, query, call):
     """
     builds the hash based on the call, query and salt
-    
+
     :param salt: The security salt defined for your bigbluebutton instance
     :param query: The query parameters for calling the bigbluebutton resource
     :param call: The bigbluebutton resource name
@@ -52,7 +52,8 @@ def get_xml(bbb_api_url, salt, call, query, pre_upload_slide=None):
     hashed = api_call(salt, query, call)
     url = bbb_api_url + call + '?' + hashed
     if call == "create" and pre_upload_slide is not None:
-        xml = "<?xml version='1.0' encoding='UTF-8'?> <modules> <module name='presentation'> <document url='%(pre_upload_slide)s'/> </module></modules>" % {"pre_upload_slide": pre_upload_slide}
+        xml = ("<?xml version='1.0' encoding='UTF-8'?> <modules> <module name='presentation'> "
+               "<document url='%(pre_upload_slide)s'/> </module></modules>" % {"pre_upload_slide": pre_upload_slide})
         headers = {'Content-Type': 'application/xml'}
         return parse(requests.post(url, data=xml, headers=headers).content)
     else:
