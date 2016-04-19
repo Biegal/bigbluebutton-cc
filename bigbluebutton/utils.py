@@ -22,8 +22,9 @@ def parse(response):
         if code == 'SUCCESS':
             return xml
         else:
-            raise
-    except ET.ParseError:
+            return None
+    #XXX refactor exception
+    except:
         return None
 
 def api_call(salt, query, call):
