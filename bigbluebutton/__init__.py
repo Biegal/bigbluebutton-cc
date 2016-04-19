@@ -17,7 +17,7 @@ from urllib import urlencode
 from bigbluebutton.utils import api_call, get_xml, xml_match
 
 
-class Meeting_Setup(object):
+class MeetingSetup(object):
     """
     Initializes meetings
     """
@@ -100,6 +100,10 @@ class Meeting_Setup(object):
         """
         if not Meeting(self.bbb_api_url, self.salt).is_running(self.meeting_id):
             call = 'create'
+            if self.pre_upload_slide is not None:
+                self.welcome = ('The presentation will appear in moment.  To download click <a href="%(url)s"></a>.'
+                                '<br> %(welcome)s' % {"url": self.pre_upload_slide,
+                                                      "welcome": self.welcome})
             voicebridge = 70000 + random.randint(0, 9999)
             query = urlencode((
                 ('name', self.meeting_name),
