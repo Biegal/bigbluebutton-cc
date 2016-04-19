@@ -1,16 +1,23 @@
+0.5.0
+--------
+PEP8 fixes
+Meeting_Setup renamed to MeetingSetup
+reduced code duplication
+
+
 0.4.1
 -------
 small fixes in Type Comparison
 
-0.4
+0.4.0
 -----
 urllib2 replaced by requests
 pre upload of slides by URL added
 further attribute for recording
 
 
-0.3
----
+0.3.0
+------
 extended and refactored meeting_info to get all 0.8 attributes
 API calls for recordings added
 

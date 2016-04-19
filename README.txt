@@ -9,7 +9,7 @@ It is a wrapper for accessing the API of bigbluebutton http://code.google.com/p/
 A simple example::
 
 import argparse
-from bigbluebutton import Meeting_Setup, Meeting
+from bigbluebutton import MeetingSetup, Meeting
 import bbb_settings 
 
 
@@ -30,10 +30,10 @@ if __name__ == '__main__':
 
     ARGS = PARSER.parse_args()
 
-    session = Meeting_Setup(bbb_settings.BBB_API_URL, bbb_settings.SALT,
-                            ARGS.meeting_name, ARGS.meeting_id,
-                            ARGS.attendee_password, ARGS.moderator_password,
-                            pre_upload_slide=ARGS.url)
+    session = MeetingSetup(bbb_settings.BBB_API_URL, bbb_settings.SALT,
+                           ARGS.meeting_name, ARGS.meeting_id,
+                           ARGS.attendee_password, ARGS.moderator_password,
+                           pre_upload_slide=ARGS.url)
     session.create_meeting()
     print "meeting expires if noone joins in"
     
