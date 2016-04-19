@@ -23,7 +23,7 @@ def parse(response):
             return xml
         else:
             raise
-    except:
+    except ET.ParseError:
         return None
 
 def api_call(salt, query, call):
@@ -57,3 +57,16 @@ def get_xml(bbb_api_url, salt, call, query, pre_upload_slide=None):
         return parse(requests.post(url, data=xml, headers=headers).content)
     else:
         return parse(requests.get(url).content)
+
+
+def xml_match(xml, match):
+    """
+    Finds the first subelement matching match and verifies that its text attribute is 'true'
+
+    :param xml: xml as ET instance
+    :param match: pattern to lookup by find
+    :return: boolean
+    """
+    if xml is not None:
+        return xml.find(match).text == 'true'
+    return False

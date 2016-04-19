@@ -14,7 +14,7 @@
 """
 import random
 from urllib import urlencode
-from bigbluebutton.utils import api_call, get_xml
+from bigbluebutton.utils import api_call, get_xml, xml_match
 
 
 class Meeting_Setup(object):
@@ -112,11 +112,8 @@ class Meeting_Setup(object):
                 ('allowStartStopRecording', self.allow_start_stop_recording),
 
             ))
-            result = get_xml(self.bbb_api_url, self.salt, call, query, self.pre_upload_slide)
-            if result is not None:
-                return True
-            else:
-                return False
+            xml = get_xml(self.bbb_api_url, self.salt, call, query, self.pre_upload_slide)
+            return xml is not None
 
 
 class Meeting(object):
@@ -139,11 +136,12 @@ class Meeting(object):
         :param meeting_id: ID that can be used to identify the meeting
         """
         call = 'isMeetingRunning'
+        match = 'running'
         query = urlencode((
             ('meetingID', meeting_id),
         ))
-        result = get_xml(self.bbb_api_url, self.salt, call, query)
-        return result.find('running').text == 'true'
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        return xml_match(xml, match)
 
     def join_url(self, meeting_id, name, password):
         """
@@ -164,8 +162,8 @@ class Meeting(object):
                            ('password', password),
                            ))
         hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        return url
+        return self.bbb_api_url + call + '?' + hashed
+
 
     def end_meeting_url(self, meeting_id, password):
         """
@@ -182,8 +180,8 @@ class Meeting(object):
         ))
 
         hashed = api_call(self.salt, query, call)
-        url = self.bbb_api_url + call + '?' + hashed
-        return url
+        return self.bbb_api_url + call + '?' + hashed
+
 
     def end_meeting(self, meeting_id, password):
         """
@@ -198,11 +196,8 @@ class Meeting(object):
                            ('meetingID', meeting_id),
                            ('password', password),
         ))
-        result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if result is not None:
-            return True
-        else:
-            return False
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        return xml is not None
 
     def meeting_info(self, meeting_id, password):
         """
@@ -217,12 +212,12 @@ class Meeting(object):
                            ('meetingID', meeting_id),
                            ('password', password),
                            ))
-        r = get_xml(self.bbb_api_url, self.salt, call, query)
-        if r is not None:
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        if xml is not None:
             # Create dict of values for easy use in template
             users = []
-            attendees = r.find('attendees')
-            if attendees:
+            attendees = xml.find('attendees')
+            if attendees is not None:
                 for attendee in attendees.getchildren():
                     user = {}
                     user['user_id'] = attendee.find('userID').text
@@ -230,24 +225,24 @@ class Meeting(object):
                     user['role'] = attendee.find('role').text
                     users.append(user)
 
-            d = {
-                 'meeting_name': r.find('meetingName').text,
-                 'meeting_id': r.find('meetingID').text,
-                 'create_time': int(r.find('createTime').text),
-                 'voice_bridge': int(r.find('voiceBridge').text),
-                 'attendee_pw': r.find('attendeePW').text,
-                 'moderator_pw': r.find('moderatorPW').text,
-                 'running': r.find('running').text == "true",
-                 'recording': r.find('recording').text == "true",
-                 'has_been_forcibly_ended': r.find('hasBeenForciblyEnded').text == "true",
-                 'start_time': int(r.find('startTime').text),
-                 'end_time': int(r.find('endTime').text),
-                 'participant_count': int(r.find('participantCount').text),
-                 'max_users': int(r.find('maxUsers').text),
-                 'moderator_count': int(r.find('moderatorCount').text),
+            meeting_info = {
+                 'meeting_name': xml.find('meetingName').text,
+                 'meeting_id': xml.find('meetingID').text,
+                 'create_time': int(xml.find('createTime').text),
+                 'voice_bridge': int(xml.find('voiceBridge').text),
+                 'attendee_pw': xml.find('attendeePW').text,
+                 'moderator_pw': xml.find('moderatorPW').text,
+                 'running': xml.find('running').text == "true",
+                 'recording': xml.find('recording').text == "true",
+                 'has_been_forcibly_ended': xml.find('hasBeenForciblyEnded').text == "true",
+                 'start_time': int(xml.find('startTime').text),
+                 'end_time': int(xml.find('endTime').text),
+                 'participant_count': int(xml.find('participantCount').text),
+                 'max_users': int(xml.find('maxUsers').text),
+                 'moderator_count': int(xml.find('moderatorCount').text),
                  'users': users
                  }
-            return d
+            return meeting_info
         else:
             return None
 
@@ -260,27 +255,27 @@ class Meeting(object):
                            ('random', 'random'),
                            ))
 
-        result = get_xml(self.bbb_api_url, self.salt, call, query)
-        if result is not None:
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        if xml is not None:
             # Create dict of values for easy use in template
-            d = []
-            r = result[1].findall('meeting')
-            for m in r:
-                meeting_id = m.find('meetingID').text
-                password = m.find('moderatorPW').text
-                d.append({
+            all_meetings = []
+            meetings = xml[1].findall('meeting')
+            for meeting in meetings:
+                meeting_id = meeting.find('meetingID').text
+                password = meeting.find('moderatorPW').text
+                all_meetings.append({
                           'name': meeting_id,
-                          'running': m.find('running').text,
+                          'running': meeting.find('running').text,
                           'moderator_pw': password,
-                          'attendee_pw': m.find('attendeePW').text,
-                          'has_been_forcibly_ended': m.find('hasBeenForciblyEnded').text == "true",
-                          'running': m.find('running').text == "true",
-                          'create_time': int(m.find('createTime').text),
+                          'attendee_pw': meeting.find('attendeePW').text,
+                          'has_been_forcibly_ended': meeting.find('hasBeenForciblyEnded').text == "true",
+                          'running': meeting.find('running').text == "true",
+                          'create_time': int(meeting.find('createTime').text),
                           'info': self.meeting_info(
                                                meeting_id,
                                                password)
                           })
-            return d
+            return all_meetings
         else:
             return None
 
@@ -294,19 +289,19 @@ class Meeting(object):
         query = urlencode((
                            ('meetingID', meeting_id),
                            ))
-        r = get_xml(self.bbb_api_url, self.salt, call, query)
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
         # ToDO implement more keys
-        if r is not None:
-            recordings = r.find('recording')
+        if xml is not None:
+            recordings = xml.find('recording')
             records = []
-            for session in recordings.getchildren():
+            for meeting in recordings.getchildren():
                 record = {}
-                record['record_id'] = attendee.find('recordID').text
-                record['meeting_id'] = attendee.find('meetingID').text
-                record['meeting_name'] = attendee.find('name').text
-                record['published'] = attendee.find('published').text == "true"
-                record['start_time'] = attendee.find('startTime').text
-                record['end_time'] = attendee.find('endTime').text
+                record['record_id'] = meeting.find('recordID').text
+                record['meeting_id'] = meeting.find('meetingID').text
+                record['meeting_name'] = meeting.find('name').text
+                record['published'] = meeting.find('published').text == "true"
+                record['start_time'] = meeting.find('startTime').text
+                record['end_time'] = meeting.find('endTime').text
                 records.append(record)
             return records
         else:
@@ -321,27 +316,26 @@ class Meeting(object):
         :param publish: The value for publish or unpublish the recording(s). Available values: True or False. 
         """
         call = 'publishRecordings'
+        match = 'published'
         query = urlencode((
-                           ('recordID', meeting_id),
+                           ('recordID', record_id),
                             'publish', str(publish).lower()
                            ))
-        r = get_xml(self.bbb_api_url, self.salt, call, query)
-        if r is not None:
-            return r.find('published').text == 'true'
-        return False
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        return xml_match(xml, match)
 
-    def delete_recordings(self, record_id):
+    def delete_recordings(self, record_id, publish=False):
         """
         Delete one or more recordings for a given recordID (or set of record IDs).
         
         :param record_id: A record ID for specify the recordings to delete. It can be a set of meetingIDs separate by commas. 
         """
         call = 'deleteRecordings'
+        match = "deleted"
         query = urlencode((
-                           ('recordID', meeting_id),
+                           ('recordID', record_id),
                             'publish', str(publish).lower()
                            ))
-        r = get_xml(self.bbb_api_url, self.salt, call, query)
-        if r is not None:
-            return r.find('deleted').text == 'true'
-        return False
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        return xml_match(xml, match)
+
