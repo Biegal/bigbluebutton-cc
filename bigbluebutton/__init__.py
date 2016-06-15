@@ -300,7 +300,8 @@ class Meeting(object):
         xml = get_xml(self.bbb_api_url, self.salt, call, query)
         # ToDO implement more keys
         if xml is not None:
-            recordings = xml.find('recording')
+            # xml tags: recordings, returncode
+            recordings = xml.find('recordings')
             records = []
             for meeting in recordings.getchildren():
                 record = {}
