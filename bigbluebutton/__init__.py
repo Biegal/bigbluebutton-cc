@@ -13,7 +13,7 @@
 
 """
 import random
-from urllib import urlencode
+from urllib.parse import urlencode
 from bigbluebutton.utils import api_call, get_xml, xml_match
 
 
@@ -25,8 +25,8 @@ class MeetingSetup(object):
     def __init__(self, bbb_api_url=None, salt=None, meeting_name='', meeting_id='',
                  attendee_password=None, moderator_password=None,
                  logout_url='', max_participants=-1, duration=0, dial_number='',
-                 welcome=u'Welcome!',
-                 moderator_only_message=u'', meta=u'',
+                 welcome='Welcome!',
+                 moderator_only_message='', meta='',
                  record=False, auto_start_recording=False, allow_start_stop_recording=True,
                  pre_upload_slide=None
                  ):
