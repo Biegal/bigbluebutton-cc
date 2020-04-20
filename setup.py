@@ -6,14 +6,14 @@ requires = ["requests"]
 
 setup(
     name='bigbluebutton',
-    version='0.5.1',
+    version='0.6.0',
     author='Reimar Bauer',
     maintainer='Reimar Bauer',
     maintainer_email='rb.proj@googlemail.com',
     url='https://bitbucket.org/ReimarBauer/bigbluebutton-python-api',
-    description='API for bigbluebutton.',
+    description='Python API for bigbluebutton.',
     long_description=long_description,
-    keywords='bigbluebutton',
+    keywords='bigbluebutton-api',
     license='MIT',
     packages=find_packages(),
     install_requires=requires,

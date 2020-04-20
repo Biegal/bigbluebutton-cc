@@ -1,9 +1,9 @@
 # Copyright: 2011 Steve Challis (http://schallis.com)
-# Copyright: 2012-2016 MoinMoin:ReimarBauer
+# Copyright: 2012-2020 ReimarBauer (rb.proj@gmail.com)
 # License: MIT
 
 """
-    bigbluebutton
+    bigbluebutton python api
 
 
 
