@@ -36,7 +36,7 @@ def api_call(salt, query, call):
     :param call: The bigbluebutton resource name
     """
     prepared = "%s%s%s" % (call, query, salt)
-    checksum = sha1(prepared).hexdigest()
+    checksum = sha1(prepared.encode('utf-8')).hexdigest()
     return "%s&checksum=%s" % (query, checksum)
 
 def get_xml(bbb_api_url, salt, call, query, pre_upload_slide=None):
