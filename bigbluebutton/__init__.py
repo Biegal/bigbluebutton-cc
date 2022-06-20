@@ -28,7 +28,16 @@ class MeetingSetup(object):
                  welcome='Welcome!',
                  moderator_only_message='', meta='',
                  record=False, auto_start_recording=False, allow_start_stop_recording=True,
-                 pre_upload_slide=None
+                 pre_upload_slide=None, 
+                 breakoutRoomsPrivateChatEnabled=True,
+                 muteOnStart=True,
+                 allowModsToUnmuteUsers=False,
+                 lockSettingsDisableCam=False,
+                 lockSettingsDisableMic=False,
+                 lockSettingsDisablePrivateChat=False,
+                 lockSettingsDisablePublicChat=False,
+                 lockSettingsDisableNote=False,
+                 lockSettingsLockedLayout=False
                  ):
         """
         :param bbb_api_url: The url to your bigbluebutton instance (including the api/)
@@ -75,6 +84,14 @@ class MeetingSetup(object):
                                            (autoStartRecording=true) with the user able to stop/start
                                            recording from the client.
         :param pre_upload_slide: You can preupload slides within the create call by providing an URL to the slides.
+        :param muteOnStart=True,
+        :param allowModsToUnmuteUsers=False,
+        :param lockSettingsDisableCam=False,
+        :param lockSettingsDisableMic=False,
+        :param lockSettingsDisablePrivateChat=False,
+        :param lockSettingsDisablePublicChat=False,
+        :param lockSettingsDisableNote=False,
+        :param lockSettingsLockedLayout=False
         """
         self.bbb_api_url = bbb_api_url
         self.salt = salt
@@ -93,6 +110,15 @@ class MeetingSetup(object):
         self.allow_start_stop_recording = allow_start_stop_recording
         self.auto_start_recording = auto_start_recording
         self.pre_upload_slide = pre_upload_slide
+        self.breakoutRoomsPrivateChatEnabled = breakoutRoomsPrivateChatEnabled
+        self.muteOnStart=muteOnStart
+        self.allowModsToUnmuteUsers=allowModsToUnmuteUsers
+        self.lockSettingsDisableCam=lockSettingsDisableCam
+        self.lockSettingsDisableMic=lockSettingsDisableMic
+        self.lockSettingsDisablePrivateChat=lockSettingsDisablePrivateChat
+        self.lockSettingsDisablePublicChat=lockSettingsDisablePublicChat
+        self.lockSettingsDisableNote=lockSettingsDisableNote
+        self.lockSettingsLockedLayout=lockSettingsLockedLayout
 
     def create_meeting(self):
         """
@@ -121,6 +147,15 @@ class MeetingSetup(object):
                 ('moderatorOnlyMessage', self.moderator_only_message),
                 ('autoStartRecording', self.auto_start_recording),
                 ('allowStartStopRecording', self.allow_start_stop_recording),
+                ('breakoutRoomsPrivateChatEnabled', self.breakoutRoomsPrivateChatEnabled),
+                ('muteOnStart', self.muteOnStart),
+                ('allowModsToUnmuteUsers', self.allowModsToUnmuteUsers),
+                ('lockSettingsDisableCam', self.lockSettingsDisableCam),
+                ('lockSettingsDisableMic', self.lockSettingsDisableMic),
+                ('lockSettingsDisablePrivateChat', self.lockSettingsDisablePrivateChat),
+                ('lockSettingsDisablePublicChat', self.lockSettingsDisablePublicChat),
+                ('lockSettingsDisableNote', self.lockSettingsDisableNote),
+                ('lockSettingsLockedLayout', self.lockSettingsLockedLayout),
             ))
             xml = get_xml(self.bbb_api_url, self.salt, call, query, self.pre_upload_slide)
             return xml is not None
