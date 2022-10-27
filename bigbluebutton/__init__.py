@@ -325,9 +325,9 @@ class Meeting(object):
                     'has_been_forcibly_ended': meeting.find('hasBeenForciblyEnded').text == "true",
                     'running': meeting.find('running').text == "true",
                     'create_time': int(meeting.find('createTime').text),
-                    'info': self.meeting_info(
-                        meeting_id,
-                        password),
+                    # 'info': self.meeting_info(
+                    #     meeting_id,
+                    #     password),
                     'users': users
                 })
             return all_meetings
