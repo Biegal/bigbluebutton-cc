@@ -305,6 +305,17 @@ class Meeting(object):
             all_meetings = []
             meetings = xml[1].findall('meeting')
             for meeting in meetings:
+                # Create dict of values for easy use in template
+                users = []
+                attendees = meeting.find('attendees')
+                if attendees is not None:
+                    for attendee in attendees.getchildren():
+                        user = {}
+                        user['user_id'] = attendee.find('userID').text
+                        user['name'] = attendee.find('fullName').text
+                        user['role'] = attendee.find('role').text
+                        users.append(user)
+
                 meeting_id = meeting.find('meetingID').text
                 password = meeting.find('moderatorPW').text
                 all_meetings.append({
@@ -316,7 +327,8 @@ class Meeting(object):
                     'create_time': int(meeting.find('createTime').text),
                     'info': self.meeting_info(
                         meeting_id,
-                        password)
+                        password),
+                    'users': users
                 })
             return all_meetings
         else:
