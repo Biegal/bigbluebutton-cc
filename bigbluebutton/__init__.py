@@ -28,7 +28,7 @@ class MeetingSetup(object):
                  welcome='Welcome!',
                  moderator_only_message='', meta='',
                  record=False, auto_start_recording=False, allow_start_stop_recording=True,
-                 pre_upload_slide=None, 
+                 pre_upload_slide=None,
                  breakoutRoomsPrivateChatEnabled=True,
                  muteOnStart=True,
                  allowModsToUnmuteUsers=False,
@@ -334,6 +334,12 @@ class Meeting(object):
         else:
             return None
 
+    def get_all_recordings(self):
+        """
+        Retrieves all the recordings that are available for playback.
+        """
+        return self.get_recordings(None)
+
     def get_recordings(self, meeting_id):
         """
         Retrieves the recordings that are available for playback for a given meetingID (or set of meeting IDs).
@@ -341,8 +347,42 @@ class Meeting(object):
         :param meetingID: The meeting ID that identifies the meeting
         """
         call = 'getRecordings'
+
+        if meeting_id:
+          query = urlencode((
+              ('meetingID', meeting_id),
+          ))
+        else:
+          query = ''
+        xml = get_xml(self.bbb_api_url, self.salt, call, query)
+        # ToDO implement more keys
+        if xml is not None:
+            # xml tags: recordings, returncode
+            recordings = xml.find('recordings')
+            records = []
+            for meeting in recordings.getchildren():
+                record = {}
+                record['record_id'] = meeting.find('recordID').text
+                record['meeting_id'] = meeting.find('meetingID').text
+                record['meeting_name'] = meeting.find('name').text
+                record['published'] = meeting.find('published').text == "true"
+                record['start_time'] = meeting.find('startTime').text
+                record['end_time'] = meeting.find('endTime').text
+                records.append(record)
+            return records
+        else:
+            return None
+
+    def get_recordings_by_record_id(self, record_id):
+        """
+        Retrieves the recordings that are available for playback for a given record_id.
+
+        :param record_id: The record ID that identifies the playback
+        """
+        call = 'getRecordings'
+
         query = urlencode((
-            ('meetingID', meeting_id),
+            ('recordID', record_id),
         ))
         xml = get_xml(self.bbb_api_url, self.salt, call, query)
         # ToDO implement more keys
