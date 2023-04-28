@@ -432,7 +432,8 @@ class Meeting(object):
         match = "deleted"
         query = urlencode((
             ('recordID', record_id),
-            'publish', str(publish).lower()
+            ('publish', str(publish).lower())
         ))
+
         xml = get_xml(self.bbb_api_url, self.salt, call, query)
         return xml_match(xml, match)
